@@ -13,7 +13,7 @@ class TodosController extends Controller
      */
     public function index()
     {
-        $current_user_id = Auth::user()->id;
+        $current_user_id = Auth::id();
         $todos = todos::where("user_id", $current_user_id)->get();
         return $todos;
     }
@@ -23,31 +23,57 @@ class TodosController extends Controller
      */
     public function store(Request $request)
     {
-        return $todo = todos::create($request->all());
-        if (!$todo) return response(['message' => "mising data"], 401);
+        $request->validate([
+            'title' => 'required|string',
+
+        ]);
+
+        $todo = todos::create($request->all());
+        return $todo;
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(todos $todos, $id)
+    public function show($id)
     {
-        return todos::where("id", $id)->first();
+        $todo = todos::find($id);
+        if (!$todo) {
+            return response(['message' => "Todo not found"], 404);
+        }
+        return $todo;
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id, todos $todos)
+    public function update(Request $request, $id)
     {
-        return todos::where("id", $id)->update($request->all());
+        $request->validate([
+            'title' => 'required|string',
+            // Add other validation rules for your todo fields here.
+        ]);
+
+        $todo = todos::find($id);
+        if (!$todo) {
+            return response(['message' => "Todo not found"], 404);
+        }
+
+        $todo->update($request->all());
+        return $todo;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(todos $todos, $id)
+    public function destroy($id)
     {
-        return todos::where("id", $id)->delete();
+        $todo = todos::find($id);
+        if (!$todo) {
+            return response(['message' => "Todo not found"], 404);
+        }
+
+        $todo->delete();
+        return response(['message' => "Todo deleted successfully"], 200);
     }
 }

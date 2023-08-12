@@ -24,5 +24,10 @@ Route::post("/user/login", [UserController::class, "login"]);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [UserController::class, "logout"]);
-    Route::resource("/todos", TodosController::class);
+    Route::get('/GetAuthUser', [UserController::class, "GetAuthUser"]);
+    Route::get('/todos', [TodosController::class, "index"]);
+    Route::post('/todos', [TodosController::class, "store"]);
+    Route::get('/todos/{id}', [TodosController::class, "show"]);
+    Route::put('/todos/{id}', [TodosController::class, "update"]);
+    Route::delete('/todos/{id}', [TodosController::class, "destroy"]);
 });

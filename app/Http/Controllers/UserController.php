@@ -22,7 +22,12 @@ class UserController extends Controller
       "email" => $userconfirm["email"],
       "password" => bcrypt($userconfirm["password"])
     ]);
-    return response($users, 201);
+
+    $token = $users->createToken("SECRET_KEY")->plainTextToken;
+    return response([
+      "user" => $users,
+      "token" => $token
+    ], 200);
   }
 
 
@@ -50,5 +55,15 @@ class UserController extends Controller
     $request->user()->tokens()->delete();
 
     return response(['message' => 'Déconnexion réussie.'], 200);
+  }
+
+  public function GetAuthUser(Request $request)
+  {
+    $user = $request->user();
+    if ($user) {
+      return $user;
+    } else {
+      return response()->json(['authenticated' => false]);
+    }
   }
 }
