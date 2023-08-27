@@ -25,7 +25,7 @@ class TodosController extends Controller
     {
         $request->validate([
             'title' => 'required|string',
-
+            'body' => 'required|string'
         ]);
 
         $todo = todos::create($request->all());
@@ -49,11 +49,6 @@ class TodosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'title' => 'required|string',
-            // Add other validation rules for your todo fields here.
-        ]);
-
         $todo = todos::find($id);
         if (!$todo) {
             return response(['message' => "Todo not found"], 404);

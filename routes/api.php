@@ -18,12 +18,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post("/user/singup", [UserController::class, "singup"]);
-Route::middleware('auth:api')->post('/logout', 'Auth\LoginController@logout');
 Route::post("/user/login", [UserController::class, "login"]);
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [UserController::class, "logout"]);
+    Route::delete('/logout', [UserController::class, "logout"]);
     Route::get('/GetAuthUser', [UserController::class, "GetAuthUser"]);
     Route::get('/todos', [TodosController::class, "index"]);
     Route::post('/todos', [TodosController::class, "store"]);

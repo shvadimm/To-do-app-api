@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class UserController extends Controller
 {
@@ -52,10 +54,16 @@ class UserController extends Controller
 
   public function logout(Request $request)
   {
-    $request->user()->tokens()->delete();
-
-    return response(['message' => 'Déconnexion réussie.'], 200);
+    $accessToken = $request->bearerToken();
+    $token = PersonalAccessToken::findToken($accessToken);
+    $token->delete();
+    return response()->json([
+      "status" => true,
+      "message" => "Logout successful",
+    ]);
   }
+
+
 
   public function GetAuthUser(Request $request)
   {
@@ -63,7 +71,11 @@ class UserController extends Controller
     if ($user) {
       return $user;
     } else {
-      return response()->json(['authenticated' => false]);
+      return response()->json(
+        [
+          'authenticated' => false
+        ]
+      );
     }
   }
 }
